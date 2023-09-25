@@ -52,7 +52,6 @@ public class UserDaoImpl implements UserDao {
                 users.add(getUserFromResultSet(resultSet));
             }
             resultSet.close();
-            statement.close();
         } catch (SQLException e) {
             throw new EntityNotFoundException("Can't get all users");
         }
@@ -82,7 +81,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User update(User user) {
         try (PreparedStatement statement = DBConfigurator.getConnection().prepareStatement(UPDATE)) {
-            DBConfigurator.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            DBConfigurator.getConnection().setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
             setStatement(user, statement);
             statement.setLong(4, user.getId());
             int result = statement.executeUpdate();
