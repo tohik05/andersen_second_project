@@ -85,7 +85,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User update(User user) {
         try {
-            DBConfigurator.getConnection().setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            DBConfigurator.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             PreparedStatement statement = DBConfigurator.getConnection()
                     .prepareStatement(UPDATE);
             setStatement(user, statement);
