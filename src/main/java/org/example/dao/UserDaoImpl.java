@@ -107,7 +107,7 @@ public class UserDaoImpl implements UserDao {
                 throw new EntityNotFoundException("There is no user with id: " + id);
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Can't delete user with id: " + id);
+            throw new DatabaseException("Can't  delete user with id: " + id);
         }
     }
 
