@@ -8,7 +8,7 @@
 <h2>User with ID '${user.id}' successfully updated</h2>
 <p>You will be redirect in 5 seconds...</p>
 
-<%response.setHeader("Refresh", "5; URL=/users");%>
+<%response.setHeader("Refresh", "5; URL=/andersen/users");%>
 
 </body>
 </html>
