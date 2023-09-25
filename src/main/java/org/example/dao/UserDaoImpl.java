@@ -28,9 +28,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getById(Long id) {
-        try {
+        try (PreparedStatement statement = DBConfigurator.getConnection().prepareStatement(GET_BY_ID)) {
             DBConfigurator.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            PreparedStatement statement = DBConfigurator.getConnection().prepareStatement(GET_BY_ID);
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -46,9 +45,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        try {
+        try (Statement statement = DBConfigurator.getConnection().createStatement()) {
             DBConfigurator.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            Statement statement = DBConfigurator.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(GET_ALL);
             while (resultSet.next()) {
                 users.add(getUserFromResultSet(resultSet));
@@ -63,9 +61,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User create(User user) {
-        try {
-            PreparedStatement statement = DBConfigurator.getConnection()
-                    .prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement statement = DBConfigurator.getConnection()
+                .prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS)) {
             setStatement(user, statement);
             int result = statement.executeUpdate();
             if (result != 1) {
@@ -84,10 +81,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User update(User user) {
-        try {
+        try (PreparedStatement statement = DBConfigurator.getConnection().prepareStatement(UPDATE)) {
             DBConfigurator.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            PreparedStatement statement = DBConfigurator.getConnection()
-                    .prepareStatement(UPDATE);
             setStatement(user, statement);
             statement.setLong(4, user.getId());
             int result = statement.executeUpdate();
@@ -102,10 +97,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean deleteById(Long id) {
-        try {
+        try (PreparedStatement statement = DBConfigurator.getConnection().prepareStatement(DELETE)) {
             DBConfigurator.getConnection().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            PreparedStatement statement = DBConfigurator.getConnection()
-                    .prepareStatement(DELETE);
             statement.setLong(1, id);
             int result = statement.executeUpdate();
             if (result == 1) {
