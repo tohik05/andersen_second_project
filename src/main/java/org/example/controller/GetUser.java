@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.exception.EntityNotFoundException;
 import org.example.service.UserDtoFull;
 import org.example.service.UserService;
 import org.example.service.UserServiceImpl;
@@ -20,15 +21,20 @@ public class GetUser extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String param = request.getParameter("id");
-        if (param != null) {
-            Long id = Long.parseLong(param);
-            UserDtoFull user = userService.getById(id);
-            request.setAttribute("user", user);
-            request.getRequestDispatcher("/WEB-INF/pages/getUser.jsp").forward(request, response);
-        } else {
+        if (param == null) {
             List<UserDtoFull> users = userService.getAll();
             request.setAttribute("users", users);
             request.getRequestDispatcher("/WEB-INF/pages/getAllUsers.jsp").forward(request, response);
+        } else {
+            Long id = Long.parseLong(param);
+            try {
+                UserDtoFull user = userService.getById(id);
+                request.setAttribute("user", user);
+                request.getRequestDispatcher("/WEB-INF/pages/getUser.jsp").forward(request, response);
+            } catch (EntityNotFoundException ex) {
+                request.setAttribute("userId", id);
+                request.getRequestDispatcher("/WEB-INF/pages/notFound.jsp").forward(request, response);
+            }
         }
     }
 

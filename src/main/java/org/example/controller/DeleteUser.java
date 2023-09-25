@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.exception.EntityNotFoundException;
 import org.example.service.UserService;
 import org.example.service.UserServiceImpl;
 
@@ -18,8 +19,12 @@ public class DeleteUser extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = Long.parseLong(request.getParameter("id"));
-        request.setAttribute("userId", id);
-        userService.deleteById(id);
-        request.getRequestDispatcher("/WEB-INF/pages/deletedRedirect.jsp").forward(request, response);
+        try {
+            request.setAttribute("userId", id);
+            userService.deleteById(id);
+            request.getRequestDispatcher("/WEB-INF/pages/deletedRedirect.jsp").forward(request, response);
+        } catch (EntityNotFoundException ex) {
+            request.getRequestDispatcher("/WEB-INF/pages/notFound.jsp").forward(request, response);
+        }
     }
 }
